@@ -3,5 +3,6 @@
 
 ### GET
 **/followers/**
+
 *params*: `username` = twitter handle
 
