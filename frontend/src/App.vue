@@ -1,7 +1,12 @@
 <template>
   <div>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App TEST" />
+  <input v-model="name">
+  <button v-on:click="set(name)"> enter </button>
+  <div>
+    <p> {{ name }} </p>
+  </div>
+  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
   </div>
 </template>
 
@@ -16,7 +21,13 @@ export default defineComponent({
   },
   data() {
     return {
-      name: undefined
+      name: undefined,
+      test2: undefined
+    }
+  },
+  methods: {
+    set: function (name: string) {
+      alert(name);
     }
   }
 });
