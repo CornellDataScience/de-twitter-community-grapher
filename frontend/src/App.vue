@@ -1,13 +1,15 @@
 <template>
   <div>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <input v-model="name">
-  <button v-on:click="set(name)"> enter </button>
-  <div>
-    <p> {{ name }} </p>
+  <input v-model="handle">
+  <button v-on:click="send(handle)"> enter </button>
+  <p> {{ user }} </p>
   </div>
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+
+  <p>
+    <span id="output">
+
+    </span>
+  </p>
 </template>
 
 <script lang="ts">
@@ -21,25 +23,13 @@ export default defineComponent({
   },
   data() {
     return {
-      name: undefined,
-      test2: "undefined"
+      user: 'hello'
     }
-  },
+  }, 
   methods: {
-    set: function (name: string) {
-      alert(name);
-    }
-  }
+    send: function(handle: string) {
+      document.getElementById('output').innerHTML = handle
+    },
+  },
 });
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
