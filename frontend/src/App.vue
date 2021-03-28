@@ -22,7 +22,7 @@ export default defineComponent({
   data() {
     return {
       name: undefined,
-      test2: undefined
+      test2: "undefined"
     }
   },
   methods: {
