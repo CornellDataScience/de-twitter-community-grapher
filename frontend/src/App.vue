@@ -1,35 +1,25 @@
 <template>
   <div>
-  <input v-model="handle">
-  <button v-on:click="send(handle)"> enter </button>
-  <p> {{ user }} </p>
+  <h1>Enter Twitter Handle</h1>
+  <input v-model="handle"> <br> <br>
+  <button v-on:click="this.user=handle"> Submit </button>
+  <Graph v-bind:user="user" />
   </div>
-
-  <p>
-    <span id="output">
-
-    </span>
-  </p>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import Graph from "./components/Graph.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    HelloWorld
+    Graph
   },
   data() {
     return {
-      user: 'hello'
+      user: ''
     }
-  }, 
-  methods: {
-    send: function(handle: string) {
-      document.getElementById('output').innerHTML = handle
-    },
-  },
+  } 
 });
 </script>
