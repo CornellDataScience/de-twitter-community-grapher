@@ -1,67 +1,108 @@
 <template>
 
   <div>
-    <h1>{{ user }}</h1>
-  </div>
+    <h1>Test</h1>
 
-  <div id="networkGraph">
-    <d3-network :net-nodes="nodes" :net-links="connections" :options="options" />
-  </div>
+    <svg width='500' height='500' class='arjuns test'>
 
+    </svg>
+
+  </div>
 
 </template>
 
-<script>
-    import { defineComponent} from "vue";
-
-    const D3Network = window.vueD3Network
-    export default defineComponent({
-        el:"#networkGraph",
-      components: {
-        D3Network
-  },
-  data () {
-    return {
-      nodes: [
-        {id: 1, name: 'node1', _color: 'red'},
-        {id: 2, name: 'node2', _color: 'green'},
-        {id: 3, name: 'node3', _color: 'black'}
-      ],
-      connections: [
-        { sid: 1, tid: 2 },
-        { sid: 2, tid: 3 },
-        { sid: 3, tid: 1 }
-      ],
-nodeSize:35,
-    }
-  },
-  computed:{
-    options(){
-      return{
-        nodeLabels: true,
-        size:{ w:2000, h:1080},
-        nodeSize: 35,
-        force: 10000
-      }
-    }
-  }
-})
-  
-</script>
-
-<!--
 <script lang="ts">
+
+import * as d3 from "d3";
 import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "Graph",
-  props: ["user"],  
-  mounted() {
-    const externalScript = document.createElement('script')
-    externalScript.setAttribute('src', 'https://d3js.org/d3.v4.min.js')
-    document.head.appendChild(externalScript)
-  },
-});
+  export default defineComponent({
+    name: "Graph",
+    props: ["user"],
+    methods: {
+       
+    },
+    mounted() {
+    const svg = d3.select('svg')
+    const width = svg.attr('width')
+    const height = svg.attr('height')
+
+    console.log(width);
+    console.log(height);
+
+    const nodes = [{}, {}, {}, {}, {}, {}, {}, {}, {}]
+
+      const links = [
+          {source: 'node1', target: 'node2'},
+          {source: 'node1', target: 'node3'},
+          {source: 'node2', target: 'node3'},
+      ]
+
+      function ticked() {
+        const u = d3.select('svg')
+          .selectAll('circle')
+          .data(nodes)
+
+        u.enter()
+          .append('circle')
+          .attr('r', 5)
+          .merge(u)
+          .attr('cx', function(d) {
+            return d.x
+          })
+          .attr('cy', function(d) { 
+            return d.y
+          })
+
+        u.exit().remove()
+      }
+
+
+      const simulation = d3.forceSimulation(nodes)
+  .force('charge', d3.forceManyBody())
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .on('tick', ticked);
+
+  simulation.force('charge', d3.forceManyBody())
+
+  /*
+      function ticked(e) {
+
+        node.attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .call(force.drag);
+
+        link.attr('x1', function(d) { return d.source.x; })
+          .attr('y1', function(d) { return d.source.y; })
+          .attr('x2', function(d) { return d.target.x; })
+          .attr('y2', function(d) { return d.target.y; })
+      }
+      */
+
+      
+    },
+    data: function() {
+      return {
+
+      }
+    }
+      
+  });
+
 
 </script>
--->
+
+<style>
+  .node {
+    fill: #ccc;
+    stroke: #fff;
+    stroke-width: 2px;
+  }
+
+  .link {
+    stroke: #777;
+    stroke-width: 2px;
+  }
+  
+</style>
+
