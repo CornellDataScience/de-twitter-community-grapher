@@ -54,8 +54,10 @@ def get_followers(username, level, max, parent_id, parent_name):
                 data_json = file_json['data']
                 
                 for i in data_json:
+                    
                     next_name = i['username']
-                    get_followers(next_name,level+1,max,user_id,username)
+                    if (parent_name != next_name):
+                        get_followers(next_name,level+1,max,user_id,username)
             
 
 #            return json.dumps(response.json(), indent=4, sort_keys=True)
