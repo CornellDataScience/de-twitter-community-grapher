@@ -13,16 +13,12 @@ _gremlin_cleanup_graph = "g.V().drop()"
 
 _gremlin_count_vertices = "g.V().count()"
 
-#client = client.Client('<GREMLIN-ENDPOINT>', 'g',
-#                       username="/dbs/<DATABASE-NAME>/colls/<GRAPH-NAME>",
-#                       password="<PRIMARY-KEY>",
-#                       message_serializer=serializer.GraphSONSerializersV2d0()
-#                       )
-client = client.Client('wss://de-twitter-project.gremlin.cosmos.azure.com:443/.gremlin.cosmosdb.azure.com:443/', 'g',
-                       username="/dbs/sample-database/colls/BotGraph",
-                       password="2pHWYzX9IHoMMryHpLEXrmecjKSTrVdcoocpZeR5wHcPixePJnLLITdv0wKTIuzaDRqfmEUYniP7PUuuUgcPsw==",
+client = client.Client('<GREMLIN-ENDPOINT>', 'g',
+                       username="/dbs/<DATABASE-NAME>/colls/<GRAPH-NAME>",
+                       password="<PRIMARY-KEY>",
                        message_serializer=serializer.GraphSONSerializersV2d0()
                        )
+
 @app.route('/')
 
 def auth():
