@@ -48,24 +48,34 @@ def get_followers(username, level, max, parent_id, parent_name):
             response2 = requests.request("GET", url_2, headers=headers)
             file_json = response2.json()
             
-            
             if response2.status_code != 200:
                 raise Exception(
                     "Request returned an error: {} {}".format(
                         response2.status_code, response2.text
                     )
                 )
-            insert_vertices(user_id, username, username)
+            callback = None
+            try:
+                query = f"g.V().has('name',within('{username}')).valueMap()"
+                print("\n> {0}\n".format(query))
+                callback = client.submitAsync(query)
+            except GremlinServerError as e:
+                error_handler()
+            lst = callback.result().all().result()
+            print(lst)
+            print(len(lst))
+            if (len(lst) == 0):
+                insert_vertices(user_id, username, username)
             if(parent_id != None and parent_name != None):
                 insert_edges(user_id,parent_id)
             print("Done")
-            if(level < max):
-                data_json = file_json['data']
-                
-                for i in data_json:
-                    
-                    next_name = i['username']
-                    if (parent_name != next_name):
+            if (len(lst) == 0):
+                if(level < max):
+                    data_json = file_json['data']
+                        
+                    for i in data_json:
+                            
+                        next_name = i['username']
                         get_followers(next_name,level+1,max,user_id,username)
             
 
@@ -214,8 +224,8 @@ def error_handler():
     sys.exit(1)
 
 
-# if __name__ == "__main__":
-#     bearer_token = auth()
-#     get_followers("theodonnell77",0,1, None, None)
-#     app.run(host='0.0.0.0', port=5001, debug = True)
+if __name__ == "__main__":
+    bearer_token = auth()
+    get_followers("theodonnell77",0,2, None, None)
+#    app.run(host='0.0.0.0', port=5001, debug = True)
 
