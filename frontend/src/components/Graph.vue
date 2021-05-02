@@ -48,7 +48,8 @@ import { defineComponent } from "vue";
           .force('charge', d3.forceManyBody())
           .force('center', d3.forceCenter(width / 2, height / 2))
           .force('link',d3.forceLink(links).id(function(d) { return d.name;}))
-          .force('link',d3.forceLink(links).distance(150).strength(0.1))
+          //.force('link',d3.forceLink(links).distance(150).strength(0.1))
+          .force("repulse", d3.forceManyBody().strength(-150) )
               
         function ticked() {
 
