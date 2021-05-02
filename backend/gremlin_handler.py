@@ -179,6 +179,16 @@ def get_edges():
         print("\n")
         print_status_attributes(callback.result())
         print("\n")
+        for element in res:
+            del element['id']
+            del element['label']
+            del element['type']
+            del element['inVLabel']
+            del element['outVLabel']
+            element['source'] = element['inV']
+            del element['inV']
+            element['target'] = element['outV']
+            del element['outV']
         return res
 
     except GremlinServerError as e:
