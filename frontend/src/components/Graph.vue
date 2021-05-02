@@ -36,18 +36,19 @@ import { defineComponent } from "vue";
         nodes = nodes.map(item => {
           return {name: parseInt(item.id)};
         });
-        console.log(nodes)
-        console.log(nodes2)
         
-        const links = [
-          {source: 1, target: 2}
-        ]
-
+        console.log(this.userData.edges)
+        
+        let links = this.userData.edges;
+        links = links.map(item => {
+          return {source: parseInt(item.source), target: parseInt(item.target)};
+        });
 
         const simulation = d3.forceSimulation(nodes)
           .force('charge', d3.forceManyBody())
           .force('center', d3.forceCenter(width / 2, height / 2))
           .force('link',d3.forceLink(links).id(function(d) { return d.name;}))
+          .force('link',d3.forceLink(links).distance(150).strength(0.1))
               
         function ticked() {
 
@@ -68,6 +69,7 @@ import { defineComponent } from "vue";
             .attr('y1', function(d) { return d.source.y; })
             .attr('x2', function(d) { return d.target.x; })
             .attr('y2', function(d) { return d.target.y; })
+
             
 
           node.enter()
