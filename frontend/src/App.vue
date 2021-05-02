@@ -20,9 +20,6 @@ export default defineComponent({
     return {
       user: ''
     }
-  }, 
-  mounted() {
-    this.$store.dispatch("setUserData");
   } 
 });
 </script>
