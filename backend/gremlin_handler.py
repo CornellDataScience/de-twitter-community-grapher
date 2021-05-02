@@ -17,10 +17,10 @@ _gremlin_get_all_vertices = "g.V()"
 
 _gremlin_get_follow_edges = "g.E().hasLabel('follows')"
 
-GREMLIN_ENDPOINT = ""
-DATABASE_NAME = ""
-GRAPH_NAME = ""
-PRIMARY_KEY = ""
+GREMLIN_ENDPOINT = "wss://de-twitter-project.gremlin.cosmos.azure.com:443/"
+DATABASE_NAME = "sample-database"
+GRAPH_NAME = "meetingtest"
+PRIMARY_KEY = "2pHWYzX9IHoMMryHpLEXrmecjKSTrVdcoocpZeR5wHcPixePJnLLITdv0wKTIuzaDRqfmEUYniP7PUuuUgcPsw=="
 
 client = client.Client(f'{GREMLIN_ENDPOINT}', 'g',
                       username=f"/dbs/{DATABASE_NAME}/colls/{GRAPH_NAME}",
@@ -179,6 +179,16 @@ def get_edges():
         print("\n")
         print_status_attributes(callback.result())
         print("\n")
+        for element in res:
+            del element['id']
+            del element['label']
+            del element['type']
+            del element['inVLabel']
+            del element['outVLabel']
+            element['source'] = element['inV']
+            del element['inV']
+            element['target'] = element['outV']
+            del element['outV']
         return res
 
     except GremlinServerError as e:
