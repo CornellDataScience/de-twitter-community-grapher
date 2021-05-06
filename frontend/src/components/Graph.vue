@@ -9,7 +9,7 @@
 
   </div>
 
-</template>
+</template>d
 
 <script lang="ts">
 
@@ -31,16 +31,36 @@ import { defineComponent } from "vue";
         const width = svg.attr('width')
         const height = svg.attr('height')
 
-        const nodes2 = [{name: 0}, {name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}]
-        let nodes = this.userData.vertices;
-        nodes = nodes.map(item => {
+        const nodes = [{name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}, {name: 7}, {name: 8}, {name: 9}, {name: 10}, {name: 11}, {name: 12}, {name: 13}]
+        const links = [
+          {source: 1, target: 2},
+          {source: 1, target: 3},
+          {source: 2, target: 3}, 
+          {source: 3, target: 4},
+          {source: 4, target: 5},
+          {source: 5, target: 6},
+          {source: 6, target: 7},
+          {source: 4, target: 7},
+          {source: 4, target: 8},
+          {source: 8, target: 9},
+          {source: 9, target: 10},
+          {source: 8, target: 10},
+          {source: 11, target: 4},
+          {source: 11, target: 12},
+          {source: 11, target: 13},
+          {source: 12, target: 13},
+          {source: 13, target: 8}
+        ]
+
+        let nodes2 = this.userData.vertices;
+        nodes2 = nodes2.map(item => {
           return {name: parseInt(item.id)};
         });
         
         console.log(this.userData.edges)
         
-        let links = this.userData.edges;
-        links = links.map(item => {
+        let links2 = this.userData.edges;
+        links2 = links2.map(item => {
           return {source: parseInt(item.source), target: parseInt(item.target)};
         });
 
@@ -50,18 +70,21 @@ import { defineComponent } from "vue";
           .force('link',d3.forceLink(links).id(function(d) { return d.name;}))
           //.force('link',d3.forceLink(links).distance(150).strength(0.1))
           .force("repulse", d3.forceManyBody().strength(-150) )
+
+        const texts = svg.selectAll(".texts")
+          .data(nodes)
+          .enter()
+          .append("text")
+          .attr("dx", 12)
+          .attr("dy", "0.35em")
+          .text(function(d) { return d.name; });
               
         function ticked() {
 
-          const node = d3.select('svg')
-            .selectAll('circle')
-            .data(nodes)
+          const node = svg.selectAll('circle').data(nodes)
 
-          const link = d3.select('svg')
-            .selectAll('line')
-            .data(links)
+          const link = svg.selectAll('line').data(links)
 
-          
           link.enter()
             .append('line')
             .merge(link)
@@ -71,8 +94,6 @@ import { defineComponent } from "vue";
             .attr('x2', function(d) { return d.target.x; })
             .attr('y2', function(d) { return d.target.y; })
 
-            
-
           node.enter()
             .append('circle')
             .attr('class','node')
@@ -81,13 +102,14 @@ import { defineComponent } from "vue";
             .attr('cx', function(d) { return d.x; })
             .attr('cy', function(d) { return d.y; })
 
-          node.append("title")
-            .text(function(d) { return d.id });
+          texts.attr("x", function(d) { return d.x;})
+               .attr("y", function(d) { return d.y});
 
           }
 
         simulation.on('tick',ticked)
-       }
+
+      }
     },
     computed: {
       userData() {
@@ -120,6 +142,7 @@ import { defineComponent } from "vue";
   }
   
 </style>
+
 
 
 
