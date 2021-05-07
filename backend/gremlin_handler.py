@@ -57,6 +57,9 @@ def get_followers(username, level, max, parent_id, parent_name):
                 )
             insert_vertices(user_id, username, username)
             if(parent_id != None and parent_name != None):
+                # TODO: don't add edge if graph already contains user_id, parent_id connection
+                #if getV(parent_id) has outgoing follows edge to user_id
+                is_following(parent_id,user_id)
                 insert_edges(user_id,parent_id)
             print("Done")
             if(level < max):
@@ -72,7 +75,28 @@ def get_followers(username, level, max, parent_id, parent_name):
 #            return json.dumps(response.json(), indent=4, sort_keys=True)
 
 
+def is_following(parent_id, user_id):
+    """ Boolean of whether parent is already following child vertex"""
+    #TODO: make it return a boolean
+    try:
+        query = f"g.V('{parent_id}').outE('follows').inV().is('{user_id}')"
+        print("\n> {0}\n".format(query))
+        callback = client.submitAsync(query)
 
+        res = ""
+        if callback.result() is not None:
+            res = callback.result().all().result()
+            print("\t Id of edge connecting parent and child:\n\t{0}".format(res))
+        else:
+            print("Something went wrong with this query: {0}".format(query))
+        print("\n")
+        print_status_attributes(callback.result())
+        print("\n")
+        return res
+
+    except GremlinServerError as e:
+        print(e)
+        error_handler()
 
 
 #uid: user id, name: any name, username: twitter handle

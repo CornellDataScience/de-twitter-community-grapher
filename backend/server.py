@@ -50,6 +50,14 @@ def edges():
         return
     return json.dumps(edges)
 
+@app.route('/api/graph/follows/', methods=['GET'])
+def following():
+    if 'parent' in request.args and 'child' in request.args:
+        #get variables parentid and userid
+        following = is_following(request.args['parent'], request.args['child'])
+        return json.dumps(following)
+    return "please provide parent and child arguments"
+
 @app.route('/')
 def hello():
     return "big ole test"
