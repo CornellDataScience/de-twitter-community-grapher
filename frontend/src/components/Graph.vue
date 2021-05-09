@@ -1,8 +1,6 @@
 <template>
 
   <div>
-    <h1>{{user}}</h1>
-
     <button v-on:click="clickHandler">test</button>
 
     <svg width='1500' height='1000' class='arjuns test'></svg>
@@ -30,8 +28,8 @@ import { defineComponent } from "vue";
         const width = svg.attr('width')
         const height = svg.attr('height')
 
-        const nodes5 = [{name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}, {name: 7}, {name: 8}, {name: 9}, {name: 10}, {name: 11}, {name: 12}, {name: 13}]
-        const links5 = [
+        const nodes3 = [{name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}, {name: 7}, {name: 8}, {name: 9}, {name: 10}, {name: 11}, {name: 12}, {name: 13}]
+        const links3 = [
           {source: 1, target: 2},
           {source: 1, target: 3},
           {source: 2, target: 3}, 
@@ -52,10 +50,10 @@ import { defineComponent } from "vue";
         ]
 
 
-        const nodes = [{name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}, {name: 7}, {name: 8}, {name: 9}, {name: 10}, {name: 11}, {name: 12},
+        const nodes2 = [{name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}, {name: 7}, {name: 8}, {name: 9}, {name: 10}, {name: 11}, {name: 12},
         {name: 13}, {name: 14}, {name: 15}, {name: 16}, {name: 17}, {name: 18}, {name: 19}, {name: 20}, {name: 21}, {name: 22}, {name: 23}, {name: 24},
         {name: 25}, {name: 26}, {name: 27}, {name: 28}, {name: 29}, {name: 30}]
-        const links = [
+        const links2 = [
           {source: 1, target: 2},
           {source: 2, target: 3},
           {source: 1, target: 4}, 
@@ -93,13 +91,13 @@ import { defineComponent } from "vue";
           {source: 26, target: 29}
         ]
 
-        const nodes3 = [{name: 1}, {name: 2}]
-        const links3 = [
+        const nodes4 = [{name: 1}, {name: 2}]
+        const links4 = [
           {source: 1, target: 2}
         ]
 
-        let nodes2 = this.userData.vertices;
-        nodes2= nodes2.map(item => {
+        let nodes = this.userData.vertices;
+        nodes = nodes.map(item => {
           return {name: parseInt(item.id), label: item.properties.name[0].value};
         });
 
@@ -115,10 +113,8 @@ import { defineComponent } from "vue";
 
         strength = strength*-1;
       
-        console.log(nodes2.length) // number of nodes
-
-        let links2 = this.userData.edges;
-        links2 = links2.map(item => {
+        let links = this.userData.edges;
+        links = links.map(item => {
           return {source: parseInt(item.source), target: parseInt(item.target)};
         });
 
@@ -135,7 +131,7 @@ import { defineComponent } from "vue";
           .append("text")
           .attr("dx", 12)
           .attr("dy", "0.35em")
-          .text(function(d) { return d.name; }); // change back to label
+          .text(function(d) { return d.label; });
 
         const link = svg.selectAll('line').data(links).enter()
           .append('line')

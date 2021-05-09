@@ -7,7 +7,7 @@
     <h2>Enter a Twitter Handle</h2>
     <input v-model="handle" id="textbox"> <br> <br>
     <div class="button">
-      <button v-on:click="this.user=handle"> Submit </button>
+      <button v-on:click="fetchData(handle)"> Submit </button>
     </div>
   </div>
   
@@ -24,14 +24,16 @@ export default defineComponent({
   components: {
     Graph
   },
+  methods: {
+    fetchData(handle) {
+      this.$store.dispatch("setUserData", handle);
+    }
+  },
   data() {
     return {
       user: ''
     }
-  },
-  mounted() {
-    this.$store.dispatch("setUserData", this.user);
-  }  
+  } 
 });
 </script>
 
