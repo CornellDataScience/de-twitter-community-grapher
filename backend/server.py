@@ -26,6 +26,7 @@ def home():
 @app.route('/api/graph', methods=['GET'])
 def vertices_and_edges():
     graph = {}
+    print(request.args)
     if 'account' in request.args:
         id = request.args['account']
         graph["vertices"] = get_vertices(id)

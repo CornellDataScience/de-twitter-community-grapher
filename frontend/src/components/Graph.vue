@@ -1,6 +1,7 @@
 <template>
 
   <div>
+
     <button v-on:click="clickHandler">Create Graph</button>
 
     <svg width='1500' height='1000' class='arjuns test'></svg>
@@ -27,6 +28,8 @@ import { defineComponent } from "vue";
         const svg = d3.select('svg')
         const width = svg.attr('width')
         const height = svg.attr('height')
+
+        svg.selectAll('*').remove();
 
         const nodes3 = [{name: 1}, {name: 2}, {name: 3}, {name: 4}, {name: 5}, {name: 6}, {name: 7}, {name: 8}, {name: 9}, {name: 10}, {name: 11}, {name: 12}, {name: 13}]
         const links3 = [

@@ -5,10 +5,12 @@
 
   <div id="userInputs">
     <h2>Enter a Twitter Handle</h2>
+
     <input v-model="handle" id="textbox"> <br> <br>
     <div class="button">
       <button v-on:click="fetchData(handle)"> Submit </button>
     </div>
+    
   </div>
   
   <Graph v-bind:user="user" />

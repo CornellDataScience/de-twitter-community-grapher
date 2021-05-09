@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 
-const url = "http://localhost:5001/api/graph?account=";
+const url = "http://localhost:5001/api/graph?name=";
 const  headers = { Accept: "application/json" };
 
 export default createStore({
