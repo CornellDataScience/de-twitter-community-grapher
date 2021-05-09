@@ -1,11 +1,11 @@
 import { createStore } from "vuex";
 
-const url = "http://localhost:5001/api/graph";
+const url = "http://localhost:5001/api/graph?account=";
 const  headers = { Accept: "application/json" };
 
 export default createStore({
   state: {
-    userData: {}
+    userData: {},
   },
   mutations: {
     setUserData (state, data) {
@@ -13,8 +13,8 @@ export default createStore({
     }
   },
   actions: {
-    async setUserData (state) {
-      const data = await fetch(url, {
+    async setUserData (state, userHandle) {
+      const data = await fetch(url+userHandle, {
         mode: "no-cors"
       }).then(response => response.json());
       state.commit("setUserData", data);

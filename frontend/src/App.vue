@@ -1,8 +1,16 @@
 <template>
   <div>
-  <h1>Enter Twitter Handle</h1>
-  <input v-model="handle"> <br> <br>
-  <button v-on:click="this.user=handle"> Submit </button>
+
+  <h1 id="title">Welcome to Twitter Community Grapher</h1><br><br>
+
+  <div id="userInputs">
+    <h2>Enter a Twitter Handle</h2>
+    <input v-model="handle" id="textbox"> <br> <br>
+    <div class="button">
+      <button v-on:click="this.user=handle"> Submit </button>
+    </div>
+  </div>
+  
   <Graph v-bind:user="user" />
   </div>
 </template>
@@ -20,6 +28,27 @@ export default defineComponent({
     return {
       user: ''
     }
-  } 
+  },
+  mounted() {
+    this.$store.dispatch("setUserData", this.user);
+  }  
 });
 </script>
+
+<style>
+  #title {
+    font-size: 50px;
+    font-family: 'Palatino';
+    text-align: center;
+    background-color: rgb(29, 161, 242);
+  }
+
+  #userInputs {
+    text-align: center;
+    font-family: 'Palatino';
+  }
+
+  body {
+    background-color: lightblue;
+  }
+</style>
