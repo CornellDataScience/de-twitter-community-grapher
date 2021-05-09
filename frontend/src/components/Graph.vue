@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <button v-on:click="clickHandler">test</button>
+    <button v-on:click="clickHandler">Create Graph</button>
 
     <svg width='1500' height='1000' class='arjuns test'></svg>
 
