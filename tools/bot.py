@@ -19,7 +19,7 @@ _gremlin_get_follow_edges = "g.E().hasLabel('follows')"
 
 GREMLIN_ENDPOINT = "wss://de-twitter-project.gremlin.cosmos.azure.com:443/"
 DATABASE_NAME = "sample-database"
-GRAPH_NAME = "meetingtest"
+GRAPH_NAME = "SevenFootWave"
 PRIMARY_KEY = "2pHWYzX9IHoMMryHpLEXrmecjKSTrVdcoocpZeR5wHcPixePJnLLITdv0wKTIuzaDRqfmEUYniP7PUuuUgcPsw=="
 
 client = client.Client(f'{GREMLIN_ENDPOINT}', 'g',
@@ -36,17 +36,26 @@ def auth():
 #@app.route('/followers/', methods=['GET'])
 def get_followers(username, level, max, parent_id, parent_name):
             print("waiting")
-            time.sleep(60)
+            print("wooo")
             url_1 = "https://api.twitter.com/2/users/by?usernames="+username
+            print("url_1: " + url_1)
             params = {"user.fields": "created_at"}
+            bearer_token = os.environ.get("BEARER_TOKEN")
+            print("token: " + bearer_token)
             headers = {"Authorization": "Bearer {}".format(bearer_token)}
             response1 = requests.request("GET", url_1, headers=headers, params = {})
+            # print(response1)
+            print("First Response: ")
             print(response1.json())
+            print("\n")
             user_id = response1.json()['data'][0]['id']
             headers = {"Authorization": "Bearer {}".format(bearer_token)}
-            url_2 = "https://api.twitter.com/2/users/{}/followers".format(user_id)
+            url_2 = "https://api.twitter.com/2/users/{}/following".format(user_id)
             response2 = requests.request("GET", url_2, headers=headers)
             file_json = response2.json()
+            print("Second Response: ")
+            print(file_json)
+            print("\n")
             
             if response2.status_code != 200:
                 raise Exception(
@@ -62,21 +71,40 @@ def get_followers(username, level, max, parent_id, parent_name):
             except GremlinServerError as e:
                 error_handler()
             lst = callback.result().all().result()
+            print("Adding user to the graph")
             print(lst)
-            print(len(lst))
+            print("\n")
+
             if (len(lst) == 0):
-                insert_vertices(user_id, username, username)
-            if(parent_id != None and parent_name != None):
-                insert_edges(user_id,parent_id)
-            print("Done")
-            if (len(lst) == 0):
-                if(level < max):
-                    data_json = file_json['data']
-                        
-                    for i in data_json:
-                            
-                        next_name = i['username']
-                        get_followers(next_name,level+1,max,user_id,username)
+                insert_vertices(user_id, username, username)                
+            if(file_json['meta']['result_count'] != 0):
+                for user in file_json['data']:
+                    following_id = user['id']
+                    following_username = user['username']
+
+                    # Check if in graph
+                    try:
+                        query = f"g.V().has('name',within('{following_username}')).valueMap()"
+                        print("\n> {0}\n".format(query))
+                        callback = client.submitAsync(query)
+                    except GremlinServerError as e:
+                        error_handler()                    
+
+                    lst = callback.result().all().result()
+                    if (len(lst) == 0):
+                        insert_vertices(following_id, following_username, following_username)
+                    
+                    insert_edges(following_id, user_id)                
+                    if(level < 2):
+                        get_followers(following_username, 2, 2, None, None)
+            #if (len(lst) == 0):
+            #    if(level < max):
+            #        data_json = file_json['data']
+            #            
+            #        for i in data_json:
+            #                
+            #            next_name = i['username']
+            #            get_followers(next_name,level+1,max,user_id,username)
             
 
 #            return json.dumps(response.json(), indent=4, sort_keys=True)
@@ -226,6 +254,6 @@ def error_handler():
 
 if __name__ == "__main__":
     bearer_token = auth()
-    get_followers("theodonnell77",0,2, None, None)
+    get_followers("SevenFootWave",0,2, None, None)
 #    app.run(host='0.0.0.0', port=5001, debug = True)
 
