@@ -1,9 +1,7 @@
 <template>
 
   <div>
-
-    <button v-on:click="clickHandler">Create Graph</button>
-
+    
     <svg width='1500' height='1000' class='arjunstest'></svg>
 
   </div>
@@ -23,8 +21,16 @@ import { defineComponent } from "vue";
       }
     },
     props: ["user"],
-    methods: {
-      clickHandler() {
+    computed: {
+      userData: function() {
+        return this.$store.getters.getUserData;
+      }
+    },
+    watch: {
+      userData: function(value) {
+
+        const graphData = value;
+
         const svg = d3.select('svg')
         const width = svg.attr('width')
         const height = svg.attr('height')
@@ -99,7 +105,7 @@ import { defineComponent } from "vue";
           {source: 1, target: 2}
         ]
 
-        let nodes = this.userData.vertices;
+        let nodes = graphData.vertices;
         nodes = nodes.map(item => {
           return {name: parseInt(item.id), label: item.properties.name[0].value};
         });
@@ -116,7 +122,7 @@ import { defineComponent } from "vue";
 
         strength = strength*-1;
       
-        let links = this.userData.edges;
+        let links = graphData.edges;
         links = links.map(item => {
           return {source: parseInt(item.source), target: parseInt(item.target)};
         });
@@ -192,12 +198,6 @@ import { defineComponent } from "vue";
         node.call(nodeDrag)
 
         simulation.on('tick',ticked)
-
-      }
-    },
-    computed: {
-      userData() {
-        return this.$store.getters.getUserData;
       }
     }
   });
