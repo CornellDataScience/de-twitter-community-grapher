@@ -22,7 +22,7 @@ DATABASE_NAME = "sample-database"
 GRAPH_NAME = "meetingtest"
 PRIMARY_KEY = "2pHWYzX9IHoMMryHpLEXrmecjKSTrVdcoocpZeR5wHcPixePJnLLITdv0wKTIuzaDRqfmEUYniP7PUuuUgcPsw=="
 
-client = client.Client(f'{GREMLIN_ENDPOINT}', 'g',
+graph_client = client.Client(f'{GREMLIN_ENDPOINT}', 'g',
                       username=f"/dbs/{DATABASE_NAME}/colls/{GRAPH_NAME}",
                       password=f"{PRIMARY_KEY}",
                       message_serializer=serializer.GraphSONSerializersV2d0()
@@ -104,7 +104,7 @@ def insert_vertices(uid, name, username):
     try:
         query = f"g.addV('person').property('id', '{uid}').property('name', '{name}').property('username', '{username}').property('pk','pk')"
         print("\n> {0}\n".format(query))
-        callback = client.submitAsync(query)
+        callback = graph_client.submitAsync(query)
         if callback.result() is not None:
             print("\tInserted this vertex:\n\t{0}".format(
                 callback.result().all().result()))
@@ -138,7 +138,7 @@ def insert_edges(uid1, uid2):
     try:
         query = f"g.V('{uid1}').addE('follows').to(g.V('{uid2}'))"
         print("\n> {0}\n".format(query))
-        callback = client.submitAsync(query)
+        callback = graph_client.submitAsync(query)
         if callback.result() is not None:
             print("\tInserted this edge:\n\t{0}\n".format(
                 callback.result().all().result()))
@@ -155,7 +155,7 @@ def count_vertices():
     try:
         print("\n> {0}".format(
             _gremlin_count_vertices))
-        callback = client.submitAsync(_gremlin_count_vertices)
+        callback = graph_client.submitAsync(_gremlin_count_vertices)
         if callback.result() is not None:
             print("\tCount of vertices: {0}".format(
                 callback.result().all().result()))
@@ -169,55 +169,120 @@ def count_vertices():
     except GremlinServerError as e:
         error_handler()
 
-def get_vertices():
-    try:
-        query = _gremlin_get_all_vertices
-        print("\n> {0}\n".format(query))
-        callback = client.submitAsync(query)
-        res = ""
-        if callback.result() is not None:
-            res = callback.result().all().result()
-            print("\tGot all vertices:\n\t{0}".format(res))
-        else:
-            print("Something went wrong with this query: {0}".format(query))
-        print("\n")
-        print_status_attributes(callback.result())
-        print("\n")
-        return res
+def get_vertices(idx = None):
+    if(idx == None):
+        try:
+            query = _gremlin_get_all_vertices
+            print("\n> {0}\n".format(query))
+            callback = graph_client.submitAsync(query)
+            res = ""
+            if callback.result() is not None:
+                res = callback.result().all().result()
+                print("\tGot all vertices:\n\t{0}".format(res))
+            else:
+                print("Something went wrong with this query: {0}".format(query))
+            print("\n")
+            print_status_attributes(callback.result())
+            print("\n")
+            return res
 
-    except GremlinServerError as e:
-        error_handler()
+        except GremlinServerError as e:
+            error_handler()
+    else:
+        try:
+            query = f"g.V().has('username', unfold().is('{idx}')).emit().repeat(both().dedup()).times(2)"
+            print("\n> {0}\n".format(query))
+            callback = graph_client.submitAsync(query)
+            res = ""
+            if callback.result() is not None:
+                res = callback.result().all().result()
+                print("\tGot vertices:\n\t{0}".format(res))
+            else:
+                print("Something went wrong with this query: {0}".format(query))
+            print("\n")
+            print_status_attributes(callback.result())
+            print("\n")
+            return res
 
-def get_edges():
-    try:
-        query = _gremlin_get_follow_edges
-        print("\n> {0}\n".format(query))
-        callback = client.submitAsync(query)
-        res = ""
-        if callback.result() is not None:
-            res = callback.result().all().result()
-            print("\tGot all follows edges:\n\t{0}".format(
-                callback.result().all().result()))
-        else:
-            print("Something went wrong with this query: {0}".format(query))
-        print("\n")
-        print_status_attributes(callback.result())
-        print("\n")
-        for element in res:
-            del element['id']
-            del element['label']
-            del element['type']
-            del element['inVLabel']
-            del element['outVLabel']
-            element['source'] = element['inV']
-            del element['inV']
-            element['target'] = element['outV']
-            del element['outV']
-        return res
+        except GremlinServerError as e:
+            error_handler()
 
-    except GremlinServerError as e:
-        error_handler()
+def get_edges(idx = None):
+    if(idx == None):
+        try:
+            query = _gremlin_get_follow_edges
+            print("\n> {0}\n".format(query))
+            callback = graph_client.submitAsync(query)
+            res = ""
+            if callback.result() is not None:
+                res = callback.result().all().result()
+                print("\tGot all follows edges:\n\t{0}".format(
+                    callback.result().all().result()))
+            else:
+                print("Something went wrong with this query: {0}".format(query))
+            print("\n")
+            print_status_attributes(callback.result())
+            print("\n")
+            for element in res:
+                del element['id']
+                del element['label']
+                del element['type']
+                del element['inVLabel']
+                del element['outVLabel']
+                element['source'] = element['inV']
+                del element['inV']
+                element['target'] = element['outV']
+                del element['outV']
+            return res
 
+        except GremlinServerError as e:
+            error_handler()
+    else:
+        try:
+            query = f"g.V().has('username', unfold().is('{idx}')).emit().repeat(both().dedup()).times(2).bothE()"
+            print("\n> {0}\n".format(query))
+            callback = graph_client.submitAsync(query)
+            res = ""
+            if callback.result() is not None:
+                res = callback.result().all().result()
+                print("\tGot all follows edges:\n\t{0}".format(
+                    callback.result().all().result()))
+            else:
+                print("Something went wrong with this query: {0}".format(query))
+            print("\n")
+            print_status_attributes(callback.result())
+            print("\n")
+            for element in res:
+                del element['id']
+                del element['label']
+                del element['type']
+                del element['inVLabel']
+                del element['outVLabel']
+                element['source'] = element['inV']
+                del element['inV']
+                element['target'] = element['outV']
+                del element['outV']
+            return res
+
+        except GremlinServerError as e:
+            error_handler()
+
+def get_graph(idx = None):
+    if(idx != None):
+        try:
+            global graph_client
+            graph_client = client.Client(f'{GREMLIN_ENDPOINT}', 'g',
+                      username=f"/dbs/{DATABASE_NAME}/colls/{idx}",
+                      password=f"{PRIMARY_KEY}",
+                      message_serializer=serializer.GraphSONSerializersV2d0()
+                      )
+            
+        except GremlinServerError as e:
+            error_handler()
+    graph = {}
+    graph["vertices"] = get_vertices()
+    graph["edges"] = get_edges()
+    return graph
 
 def error_handler():
     print('Code: {0}, Attributes: {1}'.format(

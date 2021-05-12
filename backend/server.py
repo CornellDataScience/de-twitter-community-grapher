@@ -26,8 +26,18 @@ def home():
 @app.route('/api/graph', methods=['GET'])
 def vertices_and_edges():
     graph = {}
-    graph["vertices"] = get_vertices()
-    graph["edges"] = get_edges()
+    print(request.args)
+    if 'account' in request.args:
+        id = request.args['account']
+        graph["vertices"] = get_vertices(id)
+        graph["edges"] = get_edges(id)
+    elif 'name' in request.args:
+        id = request.args['name']
+        print(id)
+        graph = get_graph(id)
+    else:
+        graph["vertices"] = get_vertices()
+        graph["edges"] = get_edges()
     for i in graph:
         if i == None:
             print("Item in graph not found")
