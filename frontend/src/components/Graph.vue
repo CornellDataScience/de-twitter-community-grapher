@@ -4,7 +4,7 @@
 
     <button v-on:click="clickHandler">Create Graph</button>
 
-    <svg width='1500' height='1000' class='arjuns test'></svg>
+    <svg width='1500' height='1000' class='arjunstest'></svg>
 
   </div>
 
@@ -144,6 +144,21 @@ import { defineComponent } from "vue";
           .append('circle')
           .attr('class','node')
           .attr('r', 5);
+
+        const graph = svg.select('.graph')
+
+        const g = svg.append("g");
+
+        const zoomHandler = d3.zoom()
+          .scaleExtent([0.1,20])
+          .on('zoom', function(event) {
+            console.log(event);
+            node.attr('transform', event.transform);
+            link.attr('transform', event.transform);
+            texts.attr('transform', event.transform);
+          });
+        
+        zoomHandler(svg);
 
         function ticked() {
           link.attr('x1', function(d) { return d.source.x; })
