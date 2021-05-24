@@ -8,7 +8,7 @@
 
     <input v-model="handle" id="textbox"> <br> <br>
     <div class="button">
-      <button v-on:click="fetchData(handle)"> Submit </button>
+      <button v-on:click="fetchData(handle)"> Create Graph </button>
     </div>
     
   </div>
